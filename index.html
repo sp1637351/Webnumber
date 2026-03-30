@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Number Info Bot - Premium UI</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<style>
+/* 🌌 Body & Background - Changed to Light Neumorphic Base */
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #dde2e8; /* 3D effect base color */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #4c5563; /* Dark slate text */
+    overflow: hidden;
+}
+
+/* 👑 Welcome Screen */
+#welcome {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    color: #4c5563;
+    z-index: 2;
+    text-shadow: 5px 5px 10px #a4afc2, -5px -5px 10px #ffffff;
+}
+
+/* 🪟 Main 3D Neumorphic Card (Used for Main UI and Admin UI) */
+.main-card {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    max-width: 360px;
+    background: #dde2e8;
+    border-radius: 22px;
+    /* Outer Shadow for 3D Pop Out */
+    box-shadow: 12px 12px 24px #a4afc2, -12px -12px 24px #ffffff;
+    padding: 30px 20px;
+    text-align: center;
+    display: none;
+    z-index: 3;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.main-card::-webkit-scrollbar { width: 5px; }
+.main-card::-webkit-scrollbar-track { background: transparent; }
+.main-card::-webkit-scrollbar-thumb { background: #a4afc2; border-radius: 10px; }
+
+/* 🔥 Title */
+.title {
+    color: #4c5563;
+    font-weight: 800;
+    font-size: 22px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 📊 Total Records Badge */
+.records-badge {
+    background: #dde2e8;
+    color: #0ea5e9;
+    padding: 8px 15px;
+    border-radius: 12px;
+    font-size: 14px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    /* Inset shadow to look pressed in */
+    box-shadow: inset 5px 5px 10px #a4afc2, inset -5px -5px 10px #ffffff;
+    display: inline-block;
+}
+
+/* ✨ Neumorphic Inputs */
+.neumorphic-input-group {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.neumorphic-input {
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    border-radius: 22px;
+    background: #dde2e8;
+    color: #4c5563;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    /* Inset shadow makes it look carved in */
+    box-shadow: inset 9px 9px 18px #a4afc2, inset -9px -9px 18px #ffffff;
+    transition: all 0.2s ease;
+}
+
+.neumorphic-input::placeholder { color: #8a99af; font-weight: 500; }
+.neumorphic-input:focus { box-shadow: inset 12px 12px 24px #a4afc2, inset -12px -12px 24px #ffffff; }
+
+/* 🚀 Neumorphic Buttons */
+.neumorphic-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    color: #4c5563;
+    border-radius: 22px;
+    background: #dde2e8;
+    /* Outer shadow for button */
+    box-shadow: 9px 9px 18px #a4afc2, -9px -9px 18px #ffffff;
+    transition: all 0.2s ease;
+    margin-top: 10px;
+}
+
+.neumorphic-btn:active {
+    box-shadow: inset 7px 7px 14px #a4afc2, inset -7px -7px 14px #ffffff;
+    color: #0ea5e9;
+}
+
+/* specific button colors */
+.btn-primary { color: #0ea5e9; }
+.btn-admin { margin-top: 25px; color: #8a99af; font-size: 14px; }
+.btn-save { color: #10b981; margin-top: 15px; }
+.btn-close { color: #f43f5e; margin-top: 10px; }
+
+/* Admin Search row */
+.admin-search-row { display: flex; gap: 10px; margin-bottom: 15px; }
+.admin-search-row .neumorphic-input { margin-bottom: 0; text-align: left; padding-left: 20px;}
+.admin-search-row .neumorphic-btn { margin-top: 0; width: auto; padding: 12px 20px; }
+
+/* 👁️ Password Toggle Icon */
+.toggle-password {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #8a99af;
+    font-size: 16px;
+    transition: 0.3s;
+}
+.toggle-password:hover { color: #4c5563; }
+
+/* Admin Inputs Scroll Area */
+.admin-scroll-area {
+    text-align: left; overflow-y: auto; max-height: 40vh; padding: 10px 5px;
+}
+
+/* ⏳ Loading Animation */
+.loading-wrapper { display: none; flex-direction: column; align-items: center; justify-content: center; margin-top: 25px; }
+.sand-clock { font-size: 35px; display: inline-block; animation: spinClock 2s infinite ease-in-out; margin-bottom: 12px; filter: drop-shadow(0 0 10px #0ea5e9); }
+.loading-ring { width: 45px; height: 45px; border: 4px solid rgba(14, 165, 233, 0.1); border-top: 4px solid #0ea5e9; border-right: 4px solid #3b82f6; border-radius: 50%; animation: spinRing 1s linear infinite; }
+.loading-text { margin-top: 15px; color: #0ea5e9; font-size: 14px; font-weight: bold; letter-spacing: 1px; animation: pulseText 1.5s infinite; }
+
+@keyframes spinClock { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(360deg); } }
+@keyframes spinRing { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+/* 📊 Result Box */
+.result { 
+    margin-top: 20px; display: none; color: #4c5563; text-align: left; background: #dde2e8; padding: 15px; border-radius: 16px; 
+    box-shadow: inset 7px 7px 14px #a4afc2, inset -7px -7px 14px #ffffff; font-size: 14px; line-height: 1.6; 
+}
+.result code { background: #dde2e8; padding: 2px 6px; border-radius: 6px; color: #f43f5e; box-shadow: 2px 2px 5px #a4afc2, -2px -2px 5px #ffffff; font-weight: bold;}
+
+/* ⭐ Footer */
+.footer { position: fixed; bottom: 0; width: 100%; padding: 15px 0; text-align: center; font-size: 14px; font-weight: 700; color: #8a99af; z-index: 10; }
+
+/* =========================================
+   🤍 NEUMORPHIC ADMIN LOGIN MODAL 🤍
+   ========================================= */
+#adminLoginModal {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 100;
+}
+
+.modal-ui {
+    background: #dde2e8; border-radius: 22px; box-shadow: 12px 12px 24px #a4afc2, -12px -12px 24px #ffffff; width: 320px; padding: 32px; text-align: center; position: relative; animation: popIn 0.3s ease-out forwards;
+}
+
+@keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+.modal-ui h1 { margin-bottom: 30px; margin-top: 0; color: #4c5563; font-size: 24px; font-weight: 800; }
+.close-neumorphic { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 18px; color: #8a99af; cursor: pointer; transition: 0.3s; }
+.close-neumorphic:hover { color: #f43f5e; }
+
+/* =========================================
+   🔥 3D HOVER ICONS 🔥
+   ========================================= */
+.link-area-wrapper {
+    position: fixed; bottom: 60px; width: 100%; display: flex; justify-content: center; z-index: 5;
+}
+
+.icon-row { display: flex; gap: 15px; }
+.card-item { text-decoration: none; }
+.card-link {
+    position: relative; display: flex; justify-content: center; align-items: center; width: 45px; height: 45px; background-color: #dde2e8; color: #4c5563; font-size: 20px; border-radius: 12px; 
+    transform: perspective(1000px) rotate(-30deg) skew(25deg) translate(0, 0); transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: -10px 10px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-link::before {
+    content: ''; position: absolute; top: 5px; left: -10px; height: 100%; width: 10px; background-color: #c8ced5; transition: all 0.5s; transform: skewY(-45deg); border-radius: 6px 0 0 6px;
+}
+.card-link::after {
+    content: ''; position: absolute; bottom: -10px; left: -5px; height: 10px; width: 100%; background-color: #aeb5be; transition: all 0.5s; transform: skewX(-45deg); border-radius: 0 0 6px 6px;
+}
+
+/* Hover Colors */
+.card-item.youtube:hover .card-link { transform: perspective(1000px) rotate(-30deg) skew(25deg) translate(10px, -10px); box-shadow: -20px 20px 20px rgba(0, 0, 0, 0.3); background-color: #ff0000; color: white; }
+.card-item.youtube:hover .card-link::before { background-color: #cc0000; }
+.card-item.youtube:hover .card-link::after { background-color: #990000; }
+
+.card-item.instagram:hover .card-link { transform: perspective(1000px) rotate(-30deg) skew(25deg) translate(10px, -10px); box-shadow: -20px 20px 20px rgba(0, 0, 0, 0.3); background-color: #e1306c; color: white; }
+.card-item.instagram:hover .card-link::before { background-color: #b8265a; }
+.card-item.instagram:hover .card-link::after { background-color: #8f1d46; }
+
+.card-item.facebook:hover .card-link { transform: perspective(1000px) rotate(-30deg) skew(25deg) translate(10px, -10px); box-shadow: -20px 20px 20px rgba(0, 0, 0, 0.3); background-color: #1877f2; color: white; }
+.card-item.facebook:hover .card-link::before { background-color: #135cae; }
+.card-item.facebook:hover .card-link::after { background-color: #0e4584; }
+
+.card-item.twitter:hover .card-link { transform: perspective(1000px) rotate(-30deg) skew(25deg) translate(10px, -10px); box-shadow: -20px 20px 20px rgba(0, 0, 0, 0.3); background-color: #1da1f2; color: white; }
+.card-item.twitter:hover .card-link::before { background-color: #1681c4; }
+.card-item.twitter:hover .card-link::after { background-color: #106297; }
+
+</style>
+</head>
+
+<body>
+
+<div id="welcome"></div>
+
+<div class="main-card" id="mainUI">
+    <div class="title">📱 Number Info Bot</div>
+    
+    <div class="neumorphic-input-group">
+        <input type="text" id="numInput" class="neumorphic-input" placeholder="Enter Number 📞">
+    </div>
+    
+    <button class="neumorphic-btn btn-primary" onclick="show()">🔍 Search Target</button>
+    
+    <div class="loading-wrapper" id="loadingUI">
+        <span class="sand-clock">⏳</span>
+        <div class="loading-ring"></div>
+        <div class="loading-text">Extracting Details...</div>
+    </div>
+
+    <div class="result" id="resultBox"></div>
+    
+    <button class="neumorphic-btn btn-admin" onclick="openAdminModal()">⚙️ Admin Login</button>
+</div>
+
+<div id="adminLoginModal">
+    <div class="modal-ui">
+        <button class="close-neumorphic" onclick="closeAdminModal()">✖</button>
+        <h1>ADMIN LOGIN 🛡️</h1>
+        
+        <div class="neumorphic-input-group">
+            <input type="text" id="adminUserInp" class="neumorphic-input" placeholder="Username 👤">
+        </div>
+        
+        <div class="neumorphic-input-group">
+            <input type="password" id="adminPassInp" class="neumorphic-input" placeholder="Password 🔐">
+            <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
+        </div>
+        
+        <button type="button" class="neumorphic-btn btn-primary" onclick="verifyAdmin()">Sign In 🚀</button>
+    </div>
+</div>
+
+<div class="main-card" id="adminUI">
+    <div class="title">🛠️ Admin Dashboard</div>
+    
+    <div class="records-badge">
+        📊 Total Records: <span id="totalRecordsCount">0</span>
+    </div>
+    
+    <p style="font-size: 13px; color: #8a99af; margin-top: 5px; margin-bottom: 15px; font-weight: bold;">Search to Edit or Add New</p>
+    
+    <div class="admin-search-row">
+        <input type="text" id="adminSearchNum" class="neumorphic-input" placeholder="Target Number* 🎯">
+        <button class="neumorphic-btn btn-primary" onclick="adminFetchData()">🔍 Fetch</button>
+    </div>
+    <p id="adminStatusMsg" style="font-size: 13px; margin-top: 0; margin-bottom: 15px; font-weight: bold;"></p>
+    
+    <div class="admin-scroll-area">
+        <input type="text" id="addName" class="neumorphic-input" placeholder="Full Name 👤">
+        <input type="text" id="addFather" class="neumorphic-input" placeholder="Father's Name 👨‍👦">
+        <input type="email" id="addEmail" class="neumorphic-input" placeholder="Email Address 📧">
+        <input type="text" id="addAddress" class="neumorphic-input" placeholder="Full Address 🏠">
+        <input type="text" id="addCircle" class="neumorphic-input" placeholder="Telecom Circle 📶">
+        <input type="text" id="addAadhar" class="neumorphic-input" placeholder="Aadhar / ID Number 🪪">
+        <input type="text" id="addInsta" class="neumorphic-input" placeholder="Instagram ID 📸">
+        <input type="text" id="addSnap" class="neumorphic-input" placeholder="Snapchat ID 👻">
+    </div>
+    
+    <button class="neumorphic-btn btn-save" onclick="saveNewRecord()">💾 Save / Update Record</button>
+    <button class="neumorphic-btn btn-close" onclick="closeAdmin()">❌ Close Admin</button>
+</div>
+
+<div class="link-area-wrapper" id="socialLinksBox">
+    <div class="icon-row">
+        <a href="https://youtube.com/@shashankpandey-u5i?si=22O6bzfILbjufXvg" target="_blank" class="card-item youtube">
+            <div class="card-link"><i class="fab fa-youtube"></i></div>
+        </a>
+        <a href="https://www.instagram.com/telegrambotuse?igsh=MWVvc3BzYXRweTJubA==" target="_blank" class="card-item instagram">
+            <div class="card-link"><i class="fab fa-instagram"></i></div>
+        </a>
+        <a href="https://www.facebook.com/share/1AvzTeUrmH/" target="_blank" class="card-item facebook">
+            <div class="card-link"><i class="fab fa-facebook-f"></i></div>
+        </a>
+        <a href="https://x.com/ShashankPa32183" target="_blank" class="card-item twitter">
+            <div class="card-link"><i class="fab fa-twitter"></i></div>
+        </a>
+    </div>
+</div>
+
+<div class="footer">👑 Credit by Mr. Shashank Pandey ✨</div>
+
+<script>
+// 🗄️ FULL DEFAULT DATABASE (100% Intact)
+const defaultDatabase = {
+    "9931452524": "👤 **Name:** Mrityunjay Kumar Pandey\n👨‍👦 **Father's Name:** Ramadhar Pandey\n📧 **Email:** `pandeymrityunjay51@gmail.com`\n🏠 **Address:** S/O Ramadhar Pandey, ward no 13, khairatiya, Betia Dih, West Champaran, Bettiah Dih, Chanpatia, Bihar 845438\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar/ID:** `321978140406`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "7255019434": "👤 **Name:** MR DEVNATH YADAV\n👨‍👦 **Father's Name:** Vindyachal Yadav\n🏠 **Address:** VINDYACHAL YADAV KHAIRATIYA KHAIRATIYA BETTIAH WEST CHAMPARAN BIHAR 845438\n📶 **Circle:** BIHAR VODAFONE\n🪪 **ID Number:** `388906312842`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9234418072": "👤 **Name:** SURAJ YADAV\n👨‍👦 **Father's Name:** DEVNATH YADAV\n📧 **Email:** `skpt856@gmail.com`\n🏠 **Address:** S/O: Devnath Yadav. khairatia. VTC: Betia Dih, PO: Bettiah Dih, Sub District: Chanpatia, District: West Champaran, State: Bihar, PIN Code: 845438\n🪪 **ID Number:** `6184 8707 3968`\n📸 **Instagram ID:** `suru.jjj_j`\n👻 **Snapchat ID:** `surajj44`",
+    "9279838115": "👤 **Name:** MANJAY YADAV\n👨‍👦 **Father's Name:** MANOJ YADAV\n📧 **Email:** `88630mykumar@gmail.com`\n🏠 **Address:** S/O: MANOJ YADAV, khairatia, Bettiah Dih, West Champaran, State: Bihar, PIN Code: 845438\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9708053421": "👤 **Name:** MR. SHASHANK PANDEY\n👨‍👦 **Father's Name:** MRITYUNJAY KUMAR PANDEY\n📧 **Email:** `sp1637351@gmail.com`\n🏠 **Address:** S/O: Mrityunjay Kumar Pandey, khairitiya, VTC: Betia Dih, PO: Bettiah Dih, Sub District: Chanpatia, District: West Champaran, State: Bihar, PIN Code: 845438\n📸 **Instagram ID:** `mrshashankpandey`\n👻 **Snapchat ID:** `shashank845438`",
+    "8084410430": "👤 **Name:** Yogesh Kumar Mishra\n👨‍👦 **Father's Name:** Baleshvar Mishra\n🏠 **Address:** S/O Baleshvar Mishra ward no-07 piparpati Piparpanti West Champaran Bihar 845452\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `668889548467`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9631259911": "👤 **Name:** Pawan Kumar\n👨‍👦 **Father's Name:** Ramadhar Pandey\n📧 **Email:** `pawanpandeybth54321@gmail.com`\n🏠 **Address:** S/O Ramadhar Pandey khairatiya ward 13 Betia Dih West Champaran Bettiah Dih Chanpatia Bihar 845438\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `565218509028`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "7762965065": "👤 **Name:** Sanjeev Kumar Jha\n👨‍👦 **Father's Name:** Anjani Kumar Jha\n📧 **Email:** `sanjeevbth001@gmail.com`\n🏠 **Address:** S/O Anjani Kumar Jha ojha tola JABDOUL ward NO 13 Jabdaul West Champaran Bihar 845450\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `804508112223`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9939419521": "👤 **Name:** Prashant Kumar Jha\n👨‍👦 **Father's Name:** Harendra Jha\n🏠 **Address:** S/O Harendra Jha dhurwa math Betia Dih West Champaran Bihar 845438\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `547103404994`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "7546916758": "👤 **Name:** Asim Iqbal\n👨‍👦 **Father's Name:** Asgar Ali\n📧 **Email:** `asgaralibth571@gmail.com`\n🏠 **Address:** Ward no-13 Mainatand PO Basantpur Mainatanr West Champaran West Champaran Bihar 845306\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `399067916732`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9199046745": "👤 **Name:** Ram Ekbal Pandey\n👨‍👦 **Father's Name:** byas pandey\n📧 **Email:** `ramekbalpandey186@gmail.com`\n🏠 **Address:** s/o byas pandey khairatiya ward 13 Bettiah Dih khairatiya ward 13 betia dih bettiah dih Chanpatia west champaran Bihar 845438\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `885671620038`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "8789619122": "👤 **Name:** Navnit Kumar\n👨‍👦 **Father's Name:** Umeshwar Tiwari\n📧 **Email:** `navneetkumarbt44251@gmail.com`\n🏠 **Address:** S/O Umeshwar Tiwari khairtiya Betia Dih West Champaran Bihar 845438\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `371948578273`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "6203165211": "👤 **Name:** Gajendra sharma\n👨‍👦 **Father's Name:** Heera sharma\n🏠 **Address:** . .Jhakhra . . west Champaran West Champaran Bihar 845307\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `884941571024`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "7250227785": "👤 **Name:** Chanda Devi\n👨‍👦 **Father's Name:** Suresh Yadav\n🏠 **Address:** W/O Suresh Yadav ward no 13 khairatiya Betia Dih West Champaran Bihar 845438\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** No Information\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "8292444681": "👤 **Name:** Chandrabhushan Pandey\n👨‍👦 **Father's Name:** Lakshman Pandey\n🏠 **Address:** W Champaran BHR 845438\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** No Information\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9507276070": "👤 **Name:** Jayram Kumar\n👨‍👦 **Father's Name:** Suresh Patel\n📧 **Email:** `jayramkumar86hi@gmail.com`\n🏠 **Address:** S/O Suresh Patel khairatiya(indra nagar) ward no 14 Betia Dih West Champaran Bihar 845438\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** No Information\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9661096759": "👤 **Name:** Badashah Dubey\n👨‍👦 **Father's Name:** Nageshwar Dubey\n🏠 **Address:** H No 59 Viil DK Shikarpur Po DK shikarpur W Champaran 845451\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** No Information\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9693377142": "👤 **Name:** Ramnaresh Tiwari\n👨‍👦 **Father's Name:** Vishwanath Tiwari\n🏠 **Address:** S/O Vishwanath Tiwari Sariswa Bazar NA bharwaliya Siriswa Majhaulia West Champaran NA Bihar 845454\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `300326248182`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "7256806787": "👤 **Name:** Raj Kumar Yadav\n👨‍👦 **Father's Name:** Bhola Yadav\n📧 **Email:** `yadavkumar99392@gmail.com`\n🏠 **Address:** S/O Bhola Yadav khairtiya Bettiah Dih Betia Dih Chanpatia West Champaran Bihar 845438\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `451607596687`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "7061386347": "👤 **Name:** Deepak Kumar Mishra\n👨‍👦 **Father's Name:** Baleshwar Mishra\n📧 **Email:** `rupalikumari83226@gmail.com`\n🏠 **Address:** S/O Baleshwar Mishra ward no 07 PIPARPANTI NA Piparpanti Jogapatti West Champaran NA Bihar 845452\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `950856755378`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9135811086": "👤 **Name:** SURESH YADAV\n👨‍👦 **Father's Name:** PRAYAG YADAV\n🏠 **Address:** W CHAMPARAN WEST CHAMPARAN WEST CHAMPARAN Bihar 845102\n📶 **Circle:** VODA BHR&JHR\n🪪 **Aadhar:** `724787692213`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9693739823": "👤 **Name:** Rampukari Devi\n👨‍👦 **Father's Name:** Vidhyanand Chaubey\n📧 **Email:** `dikuk159@gmail.com`\n🏠 **Address:** W/O Vidhyanand Chaubey Behari Bankatwa NA po-dukhichhapar Tola Gularia Sikta West Champaran NA Bihar 845307\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `287757791616`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9006010944": "👤 **Name:** Surendra Chaubey\n👨‍👦 **Father's Name:** fulena choube\n📧 **Email:** `princechaubey522@gmail.com`\n🏠 **Address:** 12 post dukhi chapar tola gularia Gulriya Gulriya Gulriy Bettiah West Champaran Bihar 845307\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `907407466854`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "7667049681": "👤 **Name:** Ranjita Kumari\n👨‍👦 **Father's Name:** shankar sah\n📧 **Email:** `bittuk33467@gmail.com`\n🏠 **Address:** d/o shankar sah Mainatand vill-nakchhed bahuarawa post-marjadawa mainatand bahuarwa Mainatanr west champaran Bihar 845306\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `895752204636`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "7294934686": "👤 **Name:** Santosh Prasad\n👨‍👦 **Father's Name:** Vinda Prasad\n📧 **Email:** `anishpatel95096@gmail.com`\n🏠 **Address:** S/O Vinda Prasad khairatiya(indra nagar) ward no 14 Betia Dih West Champaran Bihar 845438\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** No Information\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "8825243313": "👤 **Name:** Murari Kumar\n👨‍👦 **Father's Name:** Jangali Thakur\n📧 **Email:** `murarithakur849@gmail.com`\n🏠 **Address:** S/O Jangali Thakur dhurawa math Betia Dih West Champaran Bihar 845438\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `338243683072`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "6209154989": "👤 **Name:** ALOK KUMAR\n👨‍👦 **Father's Name:** SURESH PRASAD\n📧 **Email:** `kumaralok3769@gmail.com`\n🏠 **Address:** khairtiya Betia Dih khairtiya Betia Dih khairtiya Betia Dih AHWAR SHEK-PASHCHIM CHAMPARAN PASHCHIM CHAMPARAN 845438 BR\n📶 **Circle:** BIHAR VODAFONE\n🪪 **Aadhar:** `364970372747`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9523502586": "👤 **Name:** Sri Kanti Devi\n👨‍👦 **Father's Name:** Kanhaiya Mishra\n📧 **Email:** `abhishekm3367@gmail.com`\n🏠 **Address:** village gola pakariya Post Majirwa Chiraia East Champaran Bhelwa Circle Chiraian Bihar 845315\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `308383544232`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9939744439": "👤 **Name:** Bhagwat Tiwari\n👨‍👦 **Father's Name:** Mukund Tiwari\n📧 **Email:** `bhagwattiwari98@gmail.com`\n🏠 **Address:** S/O Mukund Tiwari gauchari tola sukhpur Ghorcharhi West Champaran Sikta Sikta Bihar 845307\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `829261008584`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9708976912": "👤 **Name:** AJEET KUMARDUBEY\n👨‍👦 **Father's Name:** UMA SHANKAR DUBEY\n📧 **Email:** `kumardubeyajeet@gmail.com`\n🏠 **Address:** Sirsia Sirsia Sirsia Sirsia Sirisa West Champaran BIHAR 845450\n📶 **Circle:** BIHAR BSNL\n🪪 **Aadhar:** `276448868583`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9264134453": "👤 **Name:** Viku Kumar\n👨‍👦 **Father's Name:** laxman pandey\n🏠 **Address:** s/o laxman pandey gopalpur Baisakhwa sikta gopalpur west champaran Bihar 845307\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `668779281854`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9939637495": "👤 **Name:** Raj Kishor Sharma\n👨‍👦 **Father's Name:** Bharat Thakur\n📧 **Email:** `rinasharma99396@gmail.com`\n🏠 **Address:** 36 Lohriya Tola Vill Lohiyariya Anchal Chanpatiya P Champaran Bihar 845450\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `Kjz4364618`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9905833925": "👤 **Name:** Saroj Devi\n👨‍👦 **Father's Name:** Tunna kumar rao\n📧 **Email:** `raunakkumarrajput927kz@gmail.com`\n🏠 **Address:** ward 04 dukhichhapar sargatia sargatia Sikta West Champaran Bihar 845307\n📶 **Circle:** JIO BHR&JHR\n🪪 **Aadhar:** `940570376485`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "8544523577": "👤 **Name:** Manoj Kumar Pandey\n👨‍👦 **Father's Name:** S/O: Kailash Pandey\n🏠 **Address:** yadochhapar ward no. 12 post-yadochhapar Lohiaria Chanpatia West Champaran Bihar 845450\n📶 **Circle:** BIHAR BSNL\n🪪 **Aadhar:** `393010833245`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9934924844": "👤 **Name:** Brij Bhushan Prasad\n👨‍👦 **Father's Name:** Angad Prasad\n📧 **Email:** `prashadbrijbhush@gmail.com`\n🏠 **Address:** S/O Angad Prasad avraiya shiu tola Post avraiya Tiwari tola Auraia ward no 09 West Champaran Bihar 845450\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `939885049843`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9801453190": "👤 **Name:** Sandeep Kumar Verma\n👨‍👦 **Father's Name:** Om Prakash Verma\n📧 **Email:** `deepakbth1975@gmail.com`\n🏠 **Address:** H No 4 Vill Avariya W Champaran Anchal Chanpatiya\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** No Information\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9801674330": "👤 **Name:** Rajiv Kumar\n👨‍👦 **Father's Name:** Bishwnath Prasad\n📧 **Email:** `shobhadevi03912@gmail.com`\n🏠 **Address:** S/O Bishwnath Prasad ward no 02 prasauna Bakulahar West Champaran Bihar 845449\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `466098919721`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "8507649533": "👤 **Name:** Rishi Kumar Pandey\n👨‍👦 **Father's Name:** Harendra Pandey\n🏠 **Address:** S/O Harendra Pandey 14 jaitiya Jaitia NA Jaitiya Chanpatia West Champaran NA Bihar 845449\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `833056215231`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "7654679124": "👤 **Name:** Dhananjaytiwari\n👨‍👦 **Father's Name:** late paras nath tiwari\n📧 **Email:** `dhananjay.twr001@gmail.com`\n🏠 **Address:** - WARD NO-17 BETTIAH Bettiah KOTWALI CHOWKganj no01 Bettiah Bettiah West Champaran Bihar 845438\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `507732455254`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9006976342": "👤 **Name:** Kalawati Devi\n👨‍👦 **Father's Name:** Lali Khatik\n📧 **Email:** `sahebmoruya@gmail.com`\n🏠 **Address:** WARD NUMBER -13 SHASTRI NAGAR Bagaha 1 Bagaha Pashchim Champaran West Champaran West Champaran Bihar 845101\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `443204994530`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9939687032": "👤 **Name:** Lalababu Sah\n👨‍👦 **Father's Name:** Chaudhari Sah\n🏠 **Address:** 65 Town/Vill Betiya Dih Anchal Chanpatiya W Champaran\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** No Information\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9955499197": "👤 **Name:** Chunu Kumar\n👨‍👦 **Father's Name:** Dhanesh Chobey\n📧 **Email:** `ck9253721@gmail.com`\n🏠 **Address:** 23 behra SIKTA BEHRA TOLA GULARIA BEHARI BANKATWA Tola Gularia Behari Bankatwa Sikta West Champaran West Champaran Bihar 845307\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `427817480829`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9546420107": "👤 **Name:** Vinay Mishra\n👨‍👦 **Father's Name:** Amla Mishra\n📧 **Email:** `binaymishra276@gmail.com`\n🏠 **Address:** S/O Amla Mishra Belwa Ward No 05 Belwa Bandobasti West Champaran Bihar 845450\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `435143346320`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "8935930315": "👤 **Name:** Vikash Chobey\n👨‍👦 **Father's Name:** Dhanesh Chobey\n📧 **Email:** `chaubeyvikash8084@gmail.com`\n🏠 **Address:** . . .behari bankatwa p o dhukhichhapar West Champaran Bihar 845307\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `887317897573`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "7033956232": "👤 **Name:** Ashok Kumar\n👨‍👦 **Father's Name:** Raghunath Sah\n🏠 **Address:** 00 Post Madhubani Dhaka Shiv Mandir Chirayiya East Champaran Bihar 845418\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `734792682491`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9199609953": "👤 **Name:** Niraj Kumar\n👨‍👦 **Father's Name:** Amar Nath Sah\n🏠 **Address:** S/O Amar Nath Sah Khairatiya Ward 13 Betia Dih Near Delhi Public School Khairatiya West Champaran Bihar 845438\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `820565780630`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9835815034": "👤 **Name:** Kamalesh Das\n👨‍👦 **Father's Name:** Shree Narayan Das\n🏠 **Address:** S/O Shree Narayan Das Sikta post dukhichhapar gulariya Sirsiya Sikta West Champaran Bihar 845307\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `361534202762`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "7079448161": "👤 **Name:** Sunita Kumari\n👨‍👦 **Father's Name:** prabhu yadav\n🏠 **Address:** d/o prabhu yadav Siswa Bhangaha gram bhangha post siswa tajpur siswa bhangaha bhangaha Mainatanr west champaran Bihar 845306\n📶 **Circle:** BIHAR JIO\n🪪 **Aadhar:** `562397789522`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "8809924696": "👤 **Name:** Indu Devi\n👨‍👦 **Father's Name:** Brij Yadav\n📧 **Email:** `yadavnitesh8809924@gmail.com`\n🏠 **Address:** khairatiya ward 13 Betia Dih Bettiah Dih Chanpatia West Champaran West Champaran Bihar 845438\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar:** `664311112993`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information"
+};
+
+let localData = JSON.parse(localStorage.getItem("vipBotCustomData")) || {};
+const numberDatabase = { ...defaultDatabase, ...localData };
+
+// ✍️ Typing Effect
+const text = "👑 WELCOME NUMBER INFO BOT 👑";
+let i = 0;
+function typeEffect() {
+    if (i < text.length) {
+        document.getElementById("welcome").innerHTML += text.charAt(i);
+        i++;
+        setTimeout(typeEffect, 60);
+    } else {
+        setTimeout(() => {
+            document.getElementById("welcome").style.display = "none";
+            document.getElementById("mainUI").style.display = "block";
+        }, 1000);
+    }
+}
+typeEffect();
+
+function formatResult(dataStr) {
+    let formatted = dataStr.replace(/\*\*(.*?)\*\*/g, '<b style="color: #0ea5e9;">$1</b>');
+    formatted = formatted.replace(/`(.*?)`/g, '<code>$1</code>');
+    formatted = formatted.replace(/\n/g, '<br>');
+    return formatted;
+}
+
+function updateTotalRecords() {
+    let totalCount = Object.keys(numberDatabase).length;
+    document.getElementById("totalRecordsCount").innerText = totalCount;
+}
+
+function show() {
+    let rawInput = document.getElementById("numInput").value.trim();
+    let r = document.getElementById("resultBox");
+    let loader = document.getElementById("loadingUI");
+    
+    r.style.display = "none";
+    loader.style.display = "none";
+
+    if (rawInput === "") {
+        r.style.display = "block";
+        r.innerHTML = "⚠️ Please enter a valid number.";
+        return;
+    }
+
+    let searchKey = rawInput.replace(/^\+91\s*/, '').replace(/^0/, '').replace(/[\s-]/g, '');
+    loader.style.display = "flex";
+
+    setTimeout(() => {
+        loader.style.display = "none";
+        r.style.display = "block";
+
+        if (numberDatabase[searchKey]) {
+            r.innerHTML = `<div style="margin-bottom: 10px; font-size: 16px; border-bottom: 2px solid rgba(16, 185, 129, 0.2); padding-bottom: 5px; color: #10b981;">✅ <b>Record Found</b></div>` 
+                          + formatResult(numberDatabase[searchKey]);
+        } else {
+            r.innerHTML = `<span style="color: #f43f5e;">❌ <b>No Data Found</b></span><br><br>The number "${searchKey}" is not in the database.`;
+        }
+    }, 2500);
+}
+
+/* =========================================
+   🤍 MODAL & PASSWORD LOGIC 🤍
+   ========================================= */
+function openAdminModal() {
+    document.getElementById("adminLoginModal").style.display = "flex";
+}
+
+function closeAdminModal() {
+    document.getElementById("adminLoginModal").style.display = "none";
+    document.getElementById("adminUserInp").value = "";
+    document.getElementById("adminPassInp").value = "";
+    
+    // Reset Eye icon just in case
+    let passInput = document.getElementById("adminPassInp");
+    let icon = document.querySelector(".toggle-password");
+    passInput.type = "password";
+    icon.classList.remove("fa-eye-slash");
+    icon.classList.add("fa-eye");
+}
+
+function togglePassword() {
+    let passInput = document.getElementById("adminPassInp");
+    let icon = document.querySelector(".toggle-password");
+    
+    if (passInput.type === "password") {
+        passInput.type = "text";
+        icon.classList.remove("fa-eye");
+        icon.classList.add("fa-eye-slash"); // Eye with a slash
+    } else {
+        passInput.type = "password";
+        icon.classList.remove("fa-eye-slash");
+        icon.classList.add("fa-eye"); // Normal Eye
+    }
+}
+
+function verifyAdmin() {
+    let password = document.getElementById("adminPassInp").value;
+    
+    if(password === "ShaS#9631") {
+        closeAdminModal(); 
+        
+        // Switch to Admin UI
+        document.getElementById("mainUI").style.display = "none";
+        document.getElementById("adminUI").style.display = "block";
+        document.getElementById("adminStatusMsg").innerText = "";
+        
+        // Hide Social Links upon Login!
+        document.getElementById("socialLinksBox").style.display = "none";
+        
+        updateTotalRecords();
+    } else {
+        alert("❌ Incorrect Password!");
+        document.getElementById("adminPassInp").value = ""; 
+    }
+}
+
+function closeAdmin() {
+    document.getElementById("adminUI").style.display = "none";
+    document.getElementById("mainUI").style.display = "block";
+    document.querySelectorAll('#adminUI input').forEach(input => input.value = '');
+    document.getElementById("adminStatusMsg").innerText = "";
+    
+    // Show Social Links again!
+    document.getElementById("socialLinksBox").style.display = "flex";
+}
+
+function adminFetchData() {
+    let rawInput = document.getElementById("adminSearchNum").value.trim();
+    let statusMsg = document.getElementById("adminStatusMsg");
+    
+    if (rawInput === "") {
+        statusMsg.innerText = "⚠️ Please enter a number to search.";
+        statusMsg.style.color = "#f43f5e";
+        return;
+    }
+
+    let num = rawInput.replace(/^\+91\s*/, '').replace(/^0/, '').replace(/[\s-]/g, '');
+    document.getElementById("adminSearchNum").value = num; 
+
+    if (numberDatabase[num]) {
+        statusMsg.innerText = "✅ Record Found! You can edit it below.";
+        statusMsg.style.color = "#10b981";
+        
+        let dataStr = numberDatabase[num];
+        
+        let nameMatch = dataStr.match(/👤 <b[^>]*>Name:<\/b> (.*)/) || dataStr.match(/👤 \*\*Name:\*\* (.*)/);
+        let fatherMatch = dataStr.match(/👨‍👦 <b[^>]*>Father's Name:<\/b> (.*)/) || dataStr.match(/👨‍👦 \*\*Father's Name:\*\* (.*)/);
+        let emailMatch = dataStr.match(/📧 <b[^>]*>Email:<\/b> \`?(.*?)\`?(?:\n|<br>|$)/) || dataStr.match(/📧 \*\*Email:\*\* \`?(.*?)\`?(?:\n|$)/);
+        let addressMatch = dataStr.match(/🏠 <b[^>]*>Address:<\/b> (.*)/) || dataStr.match(/🏠 \*\*Address:\*\* (.*)/);
+        let circleMatch = dataStr.match(/📶 <b[^>]*>Circle:<\/b> (.*)/) || dataStr.match(/📶 \*\*Circle:\*\* (.*)/);
+        let aadharMatch = dataStr.match(/🪪 <b[^>]*>(?:Aadhar|Aadhar\/ID|ID Number):<\/b> \`?(.*?)\`?(?:\n|<br>|$)/) || dataStr.match(/🪪 \*\*(?:Aadhar|Aadhar\/ID|ID Number):\*\* \`?(.*?)\`?(?:\n|$)/);
+        let instaMatch = dataStr.match(/📸 <b[^>]*>Instagram ID:<\/b> \`?(.*?)\`?(?:\n|<br>|$)/) || dataStr.match(/📸 \*\*Instagram ID:\*\* \`?(.*?)\`?(?:\n|$)/);
+        let snapMatch = dataStr.match(/👻 <b[^>]*>Snapchat ID:<\/b> \`?(.*?)\`?(?:\n|<br>|$)/) || dataStr.match(/👻 \*\*Snapchat ID:\*\* \`?(.*?)\`?(?:\n|$)/);
+
+        document.getElementById("addName").value = nameMatch && nameMatch[1] !== "No Information" ? nameMatch[1] : "";
+        document.getElementById("addFather").value = fatherMatch && fatherMatch[1] !== "No Information" ? fatherMatch[1] : "";
+        document.getElementById("addEmail").value = emailMatch && emailMatch[1] !== "No Information" ? emailMatch[1] : "";
+        document.getElementById("addAddress").value = addressMatch && addressMatch[1] !== "No Information" ? addressMatch[1] : "";
+        document.getElementById("addCircle").value = circleMatch && circleMatch[1] !== "No Information" ? circleMatch[1] : "";
+        document.getElementById("addAadhar").value = aadharMatch && aadharMatch[1] !== "No Information" ? aadharMatch[1] : "";
+        document.getElementById("addInsta").value = instaMatch && instaMatch[1] !== "No Information" ? instaMatch[1] : "";
+        document.getElementById("addSnap").value = snapMatch && snapMatch[1] !== "No Information" ? snapMatch[1] : "";
+        
+    } else {
+        statusMsg.innerText = "ℹ️ No record found. You can add it as a new entry.";
+        statusMsg.style.color = "#0ea5e9";
+        
+        document.getElementById("addName").value = "";
+        document.getElementById("addFather").value = "";
+        document.getElementById("addEmail").value = "";
+        document.getElementById("addAddress").value = "";
+        document.getElementById("addCircle").value = "";
+        document.getElementById("addAadhar").value = "";
+        document.getElementById("addInsta").value = "";
+        document.getElementById("addSnap").value = "";
+    }
+}
+
+function saveNewRecord() {
+    let num = document.getElementById("adminSearchNum").value.trim();
+    
+    if (num === "") {
+        alert("⚠️ Please enter Target Number at the top first!");
+        return;
+    }
+
+    let name = document.getElementById("addName").value.trim() || "No Information";
+    let father = document.getElementById("addFather").value.trim() || "No Information";
+    
+    let emailVal = document.getElementById("addEmail").value.trim();
+    let email = emailVal ? `\`${emailVal}\`` : "No Information";
+    
+    let address = document.getElementById("addAddress").value.trim() || "No Information";
+    let circle = document.getElementById("addCircle").value.trim() || "No Information";
+    
+    let aadharVal = document.getElementById("addAadhar").value.trim();
+    let aadhar = aadharVal ? `\`${aadharVal}\`` : "No Information";
+
+    let instaVal = document.getElementById("addInsta").value.trim();
+    let insta = instaVal ? `\`${instaVal}\`` : "No Information";
+
+    let snapVal = document.getElementById("addSnap").value.trim();
+    let snap = snapVal ? `\`${snapVal}\`` : "No Information";
+
+    let newDataStr = `👤 **Name:** ${name}\n👨‍👦 **Father's Name:** ${father}\n📧 **Email:** ${email}\n🏠 **Address:** ${address}\n📶 **Circle:** ${circle}\n🪪 **Aadhar:** ${aadhar}\n📸 **Instagram ID:** ${insta}\n👻 **Snapchat ID:** ${snap}`;
+
+    numberDatabase[num] = newDataStr;
+    localData[num] = newDataStr;
+    localStorage.setItem("vipBotCustomData", JSON.stringify(localData));
+
+    updateTotalRecords();
+
+    alert(`✅ Record for ${num} Saved/Updated Successfully!`);
+    closeAdmin(); 
+}
+</script>
+
+</body>
+</html>
