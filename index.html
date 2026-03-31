@@ -74,18 +74,46 @@ body {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
-/* 📊 Total Records Badge */
-.records-badge {
+/* 📊 Stats Grid (New for Admin) */
+.stats-container {
     background: #dde2e8;
+    padding: 15px;
+    border-radius: 16px;
+    box-shadow: inset 7px 7px 14px #a4afc2, inset -7px -7px 14px #ffffff;
+    margin-bottom: 20px;
+}
+
+.total-badge {
     color: #0ea5e9;
-    padding: 8px 15px;
-    border-radius: 12px;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 900;
     margin-bottom: 15px;
+    border-bottom: 2px solid rgba(14, 165, 233, 0.2);
+    padding-bottom: 10px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.stat-box {
+    background: #dde2e8;
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 12px;
     font-weight: bold;
-    /* Inset shadow to look pressed in */
-    box-shadow: inset 5px 5px 10px #a4afc2, inset -5px -5px 10px #ffffff;
-    display: inline-block;
+    color: #4c5563;
+    box-shadow: 4px 4px 8px #a4afc2, -4px -4px 8px #ffffff;
+    text-align: center;
+}
+
+.stat-box span {
+    display: block;
+    font-size: 16px;
+    color: #10b981;
+    margin-top: 5px;
 }
 
 /* ✨ Neumorphic Inputs */
@@ -141,6 +169,8 @@ body {
 .btn-admin { margin-top: 25px; color: #8a99af; font-size: 14px; }
 .btn-save { color: #10b981; margin-top: 15px; }
 .btn-close { color: #f43f5e; margin-top: 10px; }
+.btn-alldata { color: #8b5cf6; margin-top: 10px; }
+.btn-download { color: #f59e0b; margin-top: 10px; font-size: 14px; }
 
 /* Admin Search row */
 .admin-search-row { display: flex; gap: 10px; margin-bottom: 15px; }
@@ -162,7 +192,7 @@ body {
 
 /* Admin Inputs Scroll Area */
 .admin-scroll-area {
-    text-align: left; overflow-y: auto; max-height: 40vh; padding: 10px 5px;
+    text-align: left; overflow-y: auto; max-height: 30vh; padding: 10px 5px;
 }
 
 /* ⏳ Loading Animation */
@@ -175,20 +205,32 @@ body {
 @keyframes spinRing { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-/* 📊 Result Box */
+/* 📊 Result Box - Updated to compact size */
 .result { 
     margin-top: 20px; display: none; color: #4c5563; text-align: left; background: #dde2e8; padding: 15px; border-radius: 16px; 
     box-shadow: inset 7px 7px 14px #a4afc2, inset -7px -7px 14px #ffffff; font-size: 14px; line-height: 1.6; 
 }
-.result code { background: #dde2e8; padding: 2px 6px; border-radius: 6px; color: #f43f5e; box-shadow: 2px 2px 5px #a4afc2, -2px -2px 5px #ffffff; font-weight: bold;}
+.result code { 
+    background: #dde2e8; 
+    padding: 2px 6px; 
+    border-radius: 6px; 
+    color: #f43f5e; 
+    box-shadow: 2px 2px 5px #a4afc2, -2px -2px 5px #ffffff; 
+    font-weight: bold;
+    display: inline-block; 
+    margin-top: 2px;
+    margin-bottom: 2px;
+    word-break: break-word;
+    font-size: 13px; 
+}
 
 /* ⭐ Footer */
 .footer { position: fixed; bottom: 0; width: 100%; padding: 15px 0; text-align: center; font-size: 14px; font-weight: 700; color: #8a99af; z-index: 10; }
 
 /* =========================================
-   🤍 NEUMORPHIC ADMIN LOGIN MODAL 🤍
+   🤍 MODALS (Login & All Database) 🤍
    ========================================= */
-#adminLoginModal {
+.overlay-modal {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 100;
 }
 
@@ -199,8 +241,18 @@ body {
 @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
 .modal-ui h1 { margin-bottom: 30px; margin-top: 0; color: #4c5563; font-size: 24px; font-weight: 800; }
-.close-neumorphic { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 18px; color: #8a99af; cursor: pointer; transition: 0.3s; }
-.close-neumorphic:hover { color: #f43f5e; }
+.close-neumorphic { position: absolute; top: 15px; right: 15px; background: #dde2e8; border: none; font-size: 16px; color: #f43f5e; cursor: pointer; transition: 0.3s; box-shadow: 3px 3px 6px #a4afc2, -3px -3px 6px #ffffff; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+.close-neumorphic:active { box-shadow: inset 2px 2px 4px #a4afc2, inset -2px -2px 4px #ffffff; }
+
+/* Full Database List Box */
+#allDataList {
+    max-height: 65vh;
+    overflow-y: auto;
+    padding: 10px;
+}
+#allDataList::-webkit-scrollbar { width: 5px; }
+#allDataList::-webkit-scrollbar-track { background: transparent; }
+#allDataList::-webkit-scrollbar-thumb { background: #a4afc2; border-radius: 10px; }
 
 /* =========================================
    🔥 3D HOVER ICONS 🔥
@@ -267,9 +319,9 @@ body {
     <button class="neumorphic-btn btn-admin" onclick="openAdminModal()">⚙️ Admin Login</button>
 </div>
 
-<div id="adminLoginModal">
+<div class="overlay-modal" id="adminLoginModal">
     <div class="modal-ui">
-        <button class="close-neumorphic" onclick="closeAdminModal()">✖</button>
+        <button class="close-neumorphic" onclick="closeAdminModal()"><i class="fas fa-times"></i></button>
         <h1>ADMIN LOGIN 🛡️</h1>
         
         <div class="neumorphic-input-group">
@@ -288,8 +340,16 @@ body {
 <div class="main-card" id="adminUI">
     <div class="title">🛠️ Admin Dashboard</div>
     
-    <div class="records-badge">
-        📊 Total Records: <span id="totalRecordsCount">0</span>
+    <div class="stats-container">
+        <div class="total-badge">
+            📊 Total Database Records: <span id="totalRecordsCount">0</span>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-box">📧 Emails<span id="emailCount">0</span></div>
+            <div class="stat-box">🪪 Aadhar/IDs<span id="aadharCount">0</span></div>
+            <div class="stat-box">📸 Insta IDs<span id="instaCount">0</span></div>
+            <div class="stat-box">👻 Snap IDs<span id="snapCount">0</span></div>
+        </div>
     </div>
     
     <p style="font-size: 13px; color: #8a99af; margin-top: 5px; margin-bottom: 15px; font-weight: bold;">Search to Edit or Add New</p>
@@ -312,7 +372,17 @@ body {
     </div>
     
     <button class="neumorphic-btn btn-save" onclick="saveNewRecord()">💾 Save / Update Record</button>
+    <button class="neumorphic-btn btn-alldata" onclick="showAllDatabase()">🗄️ All Database</button>
+    <button class="neumorphic-btn btn-download" onclick="downloadSourceCode()">⬇️ Download Source Code</button>
     <button class="neumorphic-btn btn-close" onclick="closeAdmin()">❌ Close Admin</button>
+</div>
+
+<div class="overlay-modal" id="allDatabaseModal" style="z-index: 200;">
+    <div class="main-card" style="display: block; position: relative; top: 0; left: 0; transform: none; width: 90%; max-width: 400px;">
+        <button class="close-neumorphic" onclick="closeAllDatabase()"><i class="fas fa-times"></i></button>
+        <div class="title">🗄️ Full Database</div>
+        <div id="allDataList"></div>
+    </div>
 </div>
 
 <div class="link-area-wrapper" id="socialLinksBox">
@@ -335,9 +405,9 @@ body {
 <div class="footer">👑 Credit by Mr. Shashank Pandey ✨</div>
 
 <script>
-// 🗄️ FULL DEFAULT DATABASE (100% Intact)
+// 🗄️ FULL DEFAULT DATABASE
 const defaultDatabase = {
-    "9931452524": "👤 **Name:** `Mrityunjay` `Kumar` `Pandey``\n👨‍👦 **Father's Name:** `Ramadhar` `Pandey`\n📧 **Email:** `pandeymrityunjay51@gmail.com`\n🏠 **Address:** S/O Ramadhar Pandey, ward no 13, khairatiya, Betia Dih, West Champaran, Bettiah Dih, Chanpatia, Bihar 845438\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar/ID:** `321978140406`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
+    "9931452524": "👤 **Name:** Mrityunjay Kumar Pandey\n👨‍👦 **Father's Name:** Ramadhar Pandey\n📧 **Email:** `pandeymrityunjay51@gmail.com`\n🏠 **Address:** S/O Ramadhar Pandey, ward no 13, khairatiya, Betia Dih, West Champaran, Bettiah Dih, Chanpatia, Bihar 845438\n📶 **Circle:** AIRTEL BHR&JHR\n🪪 **Aadhar/ID:** `321978140406`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
     "7255019434": "👤 **Name:** MR DEVNATH YADAV\n👨‍👦 **Father's Name:** Vindyachal Yadav\n🏠 **Address:** VINDYACHAL YADAV KHAIRATIYA KHAIRATIYA BETTIAH WEST CHAMPARAN BIHAR 845438\n📶 **Circle:** BIHAR VODAFONE\n🪪 **ID Number:** `388906312842`\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
     "9234418072": "👤 **Name:** SURAJ YADAV\n👨‍👦 **Father's Name:** DEVNATH YADAV\n📧 **Email:** `skpt856@gmail.com`\n🏠 **Address:** S/O: Devnath Yadav. khairatia. VTC: Betia Dih, PO: Bettiah Dih, Sub District: Chanpatia, District: West Champaran, State: Bihar, PIN Code: 845438\n🪪 **ID Number:** `6184 8707 3968`\n📸 **Instagram ID:** `suru.jjj_j`\n👻 **Snapchat ID:** `surajj44`",
     "9279838115": "👤 **Name:** MANJAY YADAV\n👨‍👦 **Father's Name:** MANOJ YADAV\n📧 **Email:** `88630mykumar@gmail.com`\n🏠 **Address:** S/O: MANOJ YADAV, khairatia, Bettiah Dih, West Champaran, State: Bihar, PIN Code: 845438\n📸 **Instagram ID:** No Information\n👻 **Snapchat ID:** No Information",
@@ -408,16 +478,33 @@ function typeEffect() {
 }
 typeEffect();
 
+// ✨ Wrap ALL values in the 3D Code Box
 function formatResult(dataStr) {
-    let formatted = dataStr.replace(/\*\*(.*?)\*\*/g, '<b style="color: #0ea5e9;">$1</b>');
-    formatted = formatted.replace(/`(.*?)`/g, '<code>$1</code>');
+    let cleanStr = dataStr.replace(/`/g, '');
+    let formatted = cleanStr.replace(/\*\*(.*?)\*\*\s*(.*)/g, '<b style="color: #0ea5e9;">$1</b> <code>$2</code>');
     formatted = formatted.replace(/\n/g, '<br>');
     return formatted;
 }
 
+// ✨ Calculates Total Records + Specific Stats
 function updateTotalRecords() {
-    let totalCount = Object.keys(numberDatabase).length;
-    document.getElementById("totalRecordsCount").innerText = totalCount;
+    let tCount = 0, eCount = 0, aCount = 0, iCount = 0, sCount = 0;
+    
+    for (let key in numberDatabase) {
+        tCount++;
+        let data = numberDatabase[key];
+        
+        if (/📧 \*\*Email:\*\* (?!No Information)/.test(data)) eCount++;
+        if (/🪪 \*\*(Aadhar|Aadhar\/ID|ID Number):\*\* (?!No Information)/.test(data)) aCount++;
+        if (/📸 \*\*Instagram ID:\*\* (?!No Information)/.test(data)) iCount++;
+        if (/👻 \*\*Snapchat ID:\*\* (?!No Information)/.test(data)) sCount++;
+    }
+    
+    document.getElementById("totalRecordsCount").innerText = tCount;
+    document.getElementById("emailCount").innerText = eCount;
+    document.getElementById("aadharCount").innerText = aCount;
+    document.getElementById("instaCount").innerText = iCount;
+    document.getElementById("snapCount").innerText = sCount;
 }
 
 function show() {
@@ -442,7 +529,7 @@ function show() {
         r.style.display = "block";
 
         if (numberDatabase[searchKey]) {
-            r.innerHTML = `<div style="margin-bottom: 10px; font-size: 16px; border-bottom: 2px solid rgba(16, 185, 129, 0.2); padding-bottom: 5px; color: #10b981;">✅ <b>Record Found</b></div>` 
+            r.innerHTML = `<div style="margin-bottom: 15px; font-size: 16px; border-bottom: 2px solid rgba(16, 185, 129, 0.2); padding-bottom: 5px; color: #10b981;">✅ <b>Record Found</b></div>` 
                           + formatResult(numberDatabase[searchKey]);
         } else {
             r.innerHTML = `<span style="color: #f43f5e;">❌ <b>No Data Found</b></span><br><br>The number "${searchKey}" is not in the database.`;
@@ -462,7 +549,6 @@ function closeAdminModal() {
     document.getElementById("adminUserInp").value = "";
     document.getElementById("adminPassInp").value = "";
     
-    // Reset Eye icon just in case
     let passInput = document.getElementById("adminPassInp");
     let icon = document.querySelector(".toggle-password");
     passInput.type = "password";
@@ -477,11 +563,11 @@ function togglePassword() {
     if (passInput.type === "password") {
         passInput.type = "text";
         icon.classList.remove("fa-eye");
-        icon.classList.add("fa-eye-slash"); // Eye with a slash
+        icon.classList.add("fa-eye-slash"); 
     } else {
         passInput.type = "password";
         icon.classList.remove("fa-eye-slash");
-        icon.classList.add("fa-eye"); // Normal Eye
+        icon.classList.add("fa-eye"); 
     }
 }
 
@@ -490,13 +576,9 @@ function verifyAdmin() {
     
     if(password === "ShaS#9631") {
         closeAdminModal(); 
-        
-        // Switch to Admin UI
         document.getElementById("mainUI").style.display = "none";
         document.getElementById("adminUI").style.display = "block";
         document.getElementById("adminStatusMsg").innerText = "";
-        
-        // Hide Social Links upon Login!
         document.getElementById("socialLinksBox").style.display = "none";
         
         updateTotalRecords();
@@ -511,8 +593,6 @@ function closeAdmin() {
     document.getElementById("mainUI").style.display = "block";
     document.querySelectorAll('#adminUI input').forEach(input => input.value = '');
     document.getElementById("adminStatusMsg").innerText = "";
-    
-    // Show Social Links again!
     document.getElementById("socialLinksBox").style.display = "flex";
 }
 
@@ -605,7 +685,49 @@ function saveNewRecord() {
     alert(`✅ Record for ${num} Saved/Updated Successfully!`);
     closeAdmin(); 
 }
+
+// ✨ Show All Database List
+function showAllDatabase() {
+    let container = document.getElementById("allDataList");
+    container.innerHTML = "";
+    
+    for (let num in numberDatabase) {
+        let card = document.createElement("div");
+        card.className = "result";
+        card.style.display = "block";
+        card.style.marginBottom = "15px";
+        
+        let header = `<div style="color: #0ea5e9; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #a4afc2; padding-bottom: 4px;">📞 Target: ${num}</div>`;
+        card.innerHTML = header + formatResult(numberDatabase[num]);
+        
+        container.appendChild(card);
+    }
+    
+    document.getElementById("allDatabaseModal").style.display = "flex";
+}
+
+function closeAllDatabase() {
+    document.getElementById("allDatabaseModal").style.display = "none";
+}
+
+// ✨ Download Source Code Function
+function downloadSourceCode() {
+    // Gets the current HTML content of the page
+    let htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    
+    // Create a Blob containing the text data
+    let blob = new Blob([htmlContent], { type: "text/html" });
+    
+    // Create an invisible A tag, set the download attribute and trigger click
+    let link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "NumberInfoBot_Premium.html";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 </script>
 
 </body>
 </html>
+
